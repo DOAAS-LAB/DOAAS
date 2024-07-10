@@ -1,8 +1,11 @@
+/*
+Copyright © 2024 NAME HERE <EMAIL ADDRESS>
+
+*/
 package main
 
-import "github.com/DOAAS-LAB/DOAAS"
+import "DOAAS/cmd"
 
 func main() {
-    cmd.Execute()
+	cmd.Execute()
 }
-
