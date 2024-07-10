@@ -7,6 +7,7 @@ package cmd
 import (
 	"os"
 	"DOAAS/cmd/check"
+	"DOAAS/cmd/update"
 	"github.com/spf13/cobra"
 )
 
@@ -38,7 +39,7 @@ func Execute() {
 
 func addSubcommandPalletes(){
 	rootCmd.AddCommand(check.CheckCmd)
-
+	rootCmd.AddCommand(update.UpdateCmd)
 }
 func init() {
 	// Here you will define your flags and configuration settings.

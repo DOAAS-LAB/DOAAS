@@ -6,6 +6,9 @@ package check
 
 import (
 	"fmt"
+	"os/exec"
+	"runtime"
+	"strings"
 
 	"github.com/spf13/cobra"
 )
@@ -13,27 +16,72 @@ import (
 // versionsCmd represents the versions command
 var versionsCmd = &cobra.Command{
 	Use:   "versions",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Short: "Verifique as versões de ferramentas instaladas",
+	Long: `Este comando verifica e imprime as versões do Terraform, Docker, AWS CLI, Kubernetes (kubectl), OpenTofu e VSCode
+se eles estiverem instalados na sua máquina.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("versions called")
+		osType := runtime.GOOS
+		fmt.Printf("Sistema Operacional detectado: %s\n", osType)
+		
+		var installed []string
+		var notFound []string
+
+		tools := []string{"terraform", "docker", "aws", "kubectl", "opentofu", "vscode"}
+		for _, tool := range tools {
+			version, err := checkVersion(tool, osType)
+			if err != nil {
+				notFound = append(notFound, fmt.Sprintf("\033[1m%s\033[0m não está instalado ou não foi encontrado no PATH", strings.Title(tool)))
+			} else {
+				installed = append(installed, fmt.Sprintf("\033[1m%s\033[0m versão: %s", strings.Title(tool), version))
+			}
+		}
+
+		fmt.Println("\nFerramentas Instaladas:")
+		for _, msg := range installed {
+			fmt.Println(msg)
+		}
+
+		fmt.Println("\nFerramentas Não Encontradas:")
+		for _, msg := range notFound {
+			fmt.Println(msg)
+		}
 	},
 }
 
 func init() {
 	CheckCmd.AddCommand(versionsCmd)
-	// Here you will define your flags and configuration settings.
+}
 
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// versionsCmd.PersistentFlags().String("foo", "", "A help for foo")
+// checkVersion runs the provided command to check its version
+func checkVersion(tool, osType string) (string, error) {
+	var versionCmd *exec.Cmd
 
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// versionsCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	switch tool {
+	case "terraform":
+		versionCmd = exec.Command("terraform", "version")
+	case "docker":
+		if osType == "windows" {
+			versionCmd = exec.Command("docker", "version", "--format", "{{.Server.Version}}")
+		} else {
+			versionCmd = exec.Command("docker", "--version")
+		}
+	case "aws":
+		versionCmd = exec.Command("aws", "--version")
+	case "kubectl":
+		versionCmd = exec.Command("kubectl", "version", "--client", "--short")
+	case "opentofu":
+		versionCmd = exec.Command("opentofu", "version")
+	case "vscode":
+		versionCmd = exec.Command("code", "--version")
+	default:
+		return "", fmt.Errorf("ferramenta desconhecida: %s", tool)
+	}
+
+	output, err := versionCmd.Output()
+	if err != nil {
+		return "", err
+	}
+
+	version := strings.TrimSpace(string(output))
+	return version, nil
 }
