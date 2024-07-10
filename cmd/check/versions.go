@@ -16,13 +16,17 @@ import (
 // versionsCmd represents the versions command
 var versionsCmd = &cobra.Command{
 	Use:   "versions",
-	Short: "Verifique as versões de ferramentas instaladas",
+	Short: "Verifique as versões das ferramentas instaladas",
 	Long: `Este comando verifica e imprime as versões do Terraform, Docker, AWS CLI, Kubernetes (kubectl), OpenTofu e VSCode
 se eles estiverem instalados na sua máquina.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		osType := runtime.GOOS
+		osDistro := getLinuxDistro()
 		fmt.Printf("Sistema Operacional detectado: %s\n", osType)
-		
+		if osType == "linux" {
+			fmt.Printf("Distribuição Linux: %s\n", osDistro)
+		}
+
 		var installed []string
 		var notFound []string
 
@@ -85,3 +89,28 @@ func checkVersion(tool, osType string) (string, error) {
 	version := strings.TrimSpace(string(output))
 	return version, nil
 }
+
+// getLinuxDistro detects and returns the Linux distribution
+func getLinuxDistro() string {
+	output, err := exec.Command("cat", "/etc/os-release").Output()
+	if err != nil {
+		return "Distribuição não identificada"
+	}
+
+	var distro string
+	lines := strings.Split(string(output), "\n")
+	for _, line := range lines {
+		if strings.HasPrefix(line, "PRETTY_NAME=") {
+			distro = strings.TrimPrefix(line, "PRETTY_NAME=")
+			distro = strings.Trim(distro, "\"")
+			break
+		}
+	}
+
+	if distro == "" {
+		return "Distribuição não identificada"
+	}
+
+	return distro
+}
+
