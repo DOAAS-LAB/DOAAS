@@ -15,11 +15,15 @@ func getVersion(cmd string, args ...string) (string, error) {
     return strings.TrimSpace(string(output)), nil
 }
 
-func checkUpdates(program, currentVersion string) (bool, error) {
-    // Implementar lógica para verificar atualizações
-    // Esta função deve retornar true se houver uma atualização disponível
-    return false, nil
+func getVersion(program string) (string, error) {
+    cmd := exec.Command("powershell", "-Command", fmt.Sprintf("(Get-Command %s).FileVersionInfo.ProductVersion", program))
+    output, err := cmd.Output()
+    if err != nil {
+        return "", err
+    }
+    return strings.TrimSpace(string(output)), nil
 }
+
 
 var checkCmd = &cobra.Command{
     Use:   "check",
