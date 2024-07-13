@@ -1,5 +1,12 @@
 # DOAAS
 
+CLI para instalação e atualização de ferramentas utilizadas por DevOps e SREs.
+
+
+## Cobra
+
+Utilizando cobra-cli https://cobra.dev/ e Go
+
 ## Ideia de estrutura
 
 ```
