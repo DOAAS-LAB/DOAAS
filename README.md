@@ -12,6 +12,8 @@ Escolha uma opção
   2 - Verificar versões instaladas:
     - Lista atualizados
     Ferramentas x,y , z estão desatualziadas, gostaria de atualizar?
+  3 - Executar automações:
+    1 - Atualizador de regras de firewall (GCP)
 
     Magic happens
 ```  
