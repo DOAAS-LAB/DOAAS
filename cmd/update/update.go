@@ -9,8 +9,6 @@ import (
 	"os/exec"
 	"runtime"
 	"strconv"
-	//"strings"
-	//"time"
 
 	"github.com/spf13/cobra"
 )
@@ -107,55 +105,14 @@ func installAndUpdate(tool string) {
 	case "windows":
 		installWindows(tool)
 	case "linux":
-		installLinux(tool)
+		instalFedora(tool)
 	default:
 		fmt.Printf("Sistema Operacional não suportado: %s\n", osType)
 	}
 }
 
-// installWindows installs and updates a tool on Windows using PowerShell
-func installWindows(tool string) {
-	// Example PowerShell script to install/update tools on Windows
-	psScript := fmt.Sprintf(`
-$tool = "%s"
-
-# Example installation/update command for each tool
-switch ($tool) {
-    "tofu" {
-        choco install tofu -y
-    }
-    "docker" {
-        choco install docker-cli -y
-    }
-    "aws" {
-        choco install awscli -y
-    }
-    "kubectl" {
-        choco install kubernetes-cli -y
-    }
-    "opentofu" {
-        # Replace with actual installation command for opentofu on Windows
-        Write-Host "Installation command for opentofu on Windows"
-    }
-    "vscode" {
-        choco install vscode -y
-    }
-}
-`, tool)
-
-	cmd := exec.Command("powershell.exe", "-Command", psScript)
-	output, err := cmd.CombinedOutput()
-	if err != nil {
-		fmt.Printf("Erro ao instalar %s no Windows: %v\n", tool, err)
-		return
-	}
-
-	fmt.Printf("%s instalado e atualizado com sucesso no Windows!\n", tool)
-	fmt.Println(string(output))
-}
-
-// installLinux installs and updates a tool on Linux (Fedora) using dnf
-func installLinux(tool string) {
+// instalFedora installs and updates a tool on Linux (Fedora) using dnf
+func instalFedora(tool string) {
 	// Example dnf command to install/update tools on Fedora
 	var cmd *exec.Cmd
 
