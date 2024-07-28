@@ -19,7 +19,10 @@ Escolha uma opção
   2 - Verificar versões instaladas:
     - Lista atualizados
     Ferramentas x,y , z estão desatualziadas, gostaria de atualizar?
-
+  3 - Update
+    - verifica versões instaladas e compara com as tags do github de cada ferramenta
+    - lista as desatualizada
+    - ao clicar em em cada ferramenta ela deve atualizar e ao finalizar retornar a lista de ferramentas
     Magic happens
 ```  
 
